@@ -1,10 +1,17 @@
-const router = require('express').Router()
-const {addTask, getTasks, getTask, changeTask, deleteTask} = require('./controller')
+import { Router } from "express";
+const router = Router();
+import {
+  addTask,
+  getTasks,
+  getTask,
+  changeTask,
+  deleteTask,
+} from "./controller.js";
 //Rutas
-router.get('/tasks',getTasks)
-router.post('/tasks',addTask)
-router.get('/tasks/:id',getTask)
-router.put('/tasks/:id',changeTask)
-router.delete('/tasks/:id',deleteTask)
+router.get("/", getTasks);
+router.post("/", addTask);
+router.get("/:id", getTask);
+router.put("/:id", changeTask);
+router.delete("/:id", deleteTask);
 
-module.exports = router
+export { router };
