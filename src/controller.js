@@ -1,8 +1,13 @@
 const ctrl = {};
 const connectDB = require("./db.js");
-
+const query = async (req,res)=>{
+  return (await connectDB()).query(req)
+}
 function verificar(title, description, isComplete) {
   switch (true) {
+    case (title.length > 255):
+      return false;
+      break;
     case title.trim() == "":
       return false;
       break;
@@ -24,9 +29,12 @@ function verificar(title, description, isComplete) {
   }
 }
 ctrl.getTasks = async (req, res) => {
-  const connect = await connectDB();
-  const [lista] = await connect.query("SELECT * FROM tasks");
-  res.send(lista);
+  try {
+    const [lista] = await query('SELECT * FROM TASKS')
+    res.send(lista).status(500)
+  } catch (error) {
+    res.send(error.message).status()
+  }
 };
 ctrl.addTask = async (req, res) => {
   const { title, description, isComplete } = verificar(
@@ -34,21 +42,23 @@ ctrl.addTask = async (req, res) => {
     req.body.description,
     req.body.isComplete
   );
-  const connect = await connectDB();
   if (title && description && typeof isComplete == "boolean") {
-    const peticion = await connect.query(
-      `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`
-    );
-    res.send("Se agregó la tarea").status(201);
+    try {
+      const peticion = await query(
+        `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`
+      );
+      res.send("Se agregó la tarea").status(201);
+    } catch (error) {
+      res.send(error.message).status()
+    }
   } else {
     res.send("Error").status(400);
   }
 };
 ctrl.getTask = async (req, res) => {
   const id = req.params.id;
-  const connect = await connectDB();
   if (id) {
-    const [task] = await connect.query(`SELECT * FROM TASKS WHERE id = ${id}`);
+    const [task] = await query(`SELECT * FROM TASKS WHERE id = ${id}`);
     if (!task.toString()) {
       res.send("No se encontró la tarea").status(404);
     } else {
@@ -61,19 +71,29 @@ ctrl.getTask = async (req, res) => {
 };
 ctrl.changeTask = async (req, res) => {
   const { id } = req.params;
-  const connect = await connectDB();
-  const { title, description, isComplete } = req.body;
-  const peticion = await connect.query(
-    `UPDATE TASKS SET title = '${title}',description='${description}',isComplete='${isComplete}' WHERE id = ${id}`
+  const { title, description, isComplete } = verificar(
+    req.body.title,
+    req.body.description,
+    req.body.isComplete
   );
-  console.log(peticion);
-};
+    const [peticion] = await query(
+      `UPDATE TASKS SET title = '${title}',description='${description}',isComplete=${isComplete} WHERE id = ${id}`
+    ); 
+    if (peticion.changedRows == 0){
+      res.send('No se modificó la tarea').status(400)
+    }else{
+      res.send('Se modificó la tarea con éxito').status(200)
+    }
+}
 
 ctrl.deleteTask = async (req, res) => {
   const { id } = req.params;
-  const connect = await connectDB();
-  const peticion = await connect.query(`DELETE FROM TASKS WHERE id = ${id}`);
-  res.send(peticion);
+    const [peticion] = await query(`DELETE FROM TASKS WHERE id = ${id}`);
+    if (peticion.affectedRows == 0){
+      res.send('No se eliminó la tarea').status(500)
+    }else{
+      res.send('Se eliminó la tarea')
+    }
 };
 
 module.exports = ctrl;
