@@ -36,23 +36,9 @@ export const getTasks = async (req, res) => {
   }
 };
 export const addTask = async (req, res) => {
-  const { title, description, isComplete } = verificar(
-    req.body.title,
-    req.body.description,
-    req.body.isComplete
-  );
-  if (title && description && typeof isComplete == "boolean") {
-    try {
+  const { title, description, isComplete } = req.body
       const peticion = await query(
-        `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`
-      );
-      res.send("Se agregó la tarea").status(201);
-    } catch (error) {
-      res.send(error.message).status();
-    }
-  } else {
-    res.send("Error").status(400);
-  }
+        `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`);
 };
 export const getTask = async (req, res) => {
   const id = req.params.id;
@@ -70,11 +56,7 @@ export const getTask = async (req, res) => {
 };
 export const changeTask = async (req, res) => {
   const { id } = req.params;
-  const { title, description, isComplete } = verificar(
-    req.body.title,
-    req.body.description,
-    req.body.isComplete
-  );
+  const { title, description, isComplete } = req.body
   const [peticion] = await query(
     `UPDATE TASKS SET title = '${title}',description='${description}',isComplete=${isComplete} WHERE id = ${id}`
   );
