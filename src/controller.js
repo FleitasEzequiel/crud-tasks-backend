@@ -2,77 +2,38 @@ import { connectDB } from "./db.js";
 const query = async (req, res) => {
   return (await connectDB()).query(req);
 };
-function verificar(title, description, isComplete) {
-  switch (true) {
-    case title.length > 255:
-      return false;
-      break;
-    case title.trim() == "":
-      return false;
-      break;
-    case typeof title != "string":
-      return false;
-      break;
-    case description.trim() == "":
-      return false;
-      break;
-    case typeof description != "string":
-      return false;
-      break;
-    case typeof isComplete != "boolean":
-      return false;
-      break;
-    default:
-      return { title, description, isComplete };
-      break;
-  }
-}
+
 export const getTasks = async (req, res) => {
   try {
     const [lista] = await query("SELECT * FROM TASKS");
-    res.send(lista).status(500);
+    res.send(lista).status(200);
   } catch (error) {
-    res.send(error.message).status();
+    res.send(error).status(500);
   }
 };
 export const addTask = async (req, res) => {
-  const { title, description, isComplete } = req.body
-      const peticion = await query(
-        `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`);
+  const { title, description, isComplete } = req.body;
+  const pet = await query(
+    `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`
+  );
+  res.send(pet);
 };
 export const getTask = async (req, res) => {
   const id = req.params.id;
-  if (id) {
-    const [task] = await query(`SELECT * FROM TASKS WHERE id = ${id}`);
-    if (!task.toString()) {
-      res.send("No se encontró la tarea").status(404);
-    } else {
-      console.log(task);
-      res.send(task).status(200);
-    }
-  } else {
-    res.send('Error en el campo "id"').status(400);
-  }
+  const [task] = await query(`SELECT * FROM TASKS WHERE id = ${id}`);
+  res.send(task);
 };
 export const changeTask = async (req, res) => {
   const { id } = req.params;
-  const { title, description, isComplete } = req.body
+  const { title, description, isComplete } = req.body;
   const [peticion] = await query(
     `UPDATE TASKS SET title = '${title}',description='${description}',isComplete=${isComplete} WHERE id = ${id}`
   );
-  if (peticion.changedRows == 0) {
-    res.send("No se modificó la tarea").status(400);
-  } else {
-    res.send("Se modificó la tarea con éxito").status(200);
-  }
+  res.send(peticion);
 };
 
 export const deleteTask = async (req, res) => {
   const { id } = req.params;
   const [peticion] = await query(`DELETE FROM TASKS WHERE id = ${id}`);
-  if (peticion.affectedRows == 0) {
-    res.send("No se eliminó la tarea").status(500);
-  } else {
-    res.send("Se eliminó la tarea");
-  }
+  res.send(peticion);
 };

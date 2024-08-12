@@ -1,0 +1,17 @@
+{
+  "Nombres": "José Ezequiel",
+  "Apellidos": "Fleitas",
+  "Genero": "",
+  "DNI": "",
+  "FechaNacimiento": "",
+  "Domicilio": {},
+  "Carrera": {
+    "Tecnicatura": "",
+    "Anio": ""
+  },
+  "Contacto": {
+    "Telefono": "",
+    "Email": ""
+  },
+  "CUE_Anexo": ""
+}
