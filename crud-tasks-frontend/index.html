@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="./node_modules/material-components-web/dist/material-components-web.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+  </head>
+  <body>
+    <!-- Input de Agregar Tarea -->
+    <md-dialog id="popup">
+      <div slot="headline">Agregar Tarea</div>
+      <form
+        slot="content"
+        method="dialog"
+        style="display: flex; flex-direction: column"
+      >
+        <label for="title">Titulo</label>
+        <input type="text" name="titulo" id="title" />
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" id="description" />
+      </form>
+      <div slot="actions">
+        <md-filled-button form="form-id" id="form-id">Ok</md-filled-button>
+      </div>
+    </md-dialog>
+    <md-filled-text-field label="Username" type="email"> </md-filled-text-field>
+
+    <md-filled-text-field label="Password" type="password">
+    </md-filled-text-field>
+    <!-- Acá está la lista de tareas -->
+    <md-branded-fab
+      size="large"
+      label="Añadir Tarea"
+      style="position: fixed; bottom: 10vh; right: 11vh"
+      id="boton"
+    >
+    </md-branded-fab>
+    <div class="container">
+      <mdc-list id="listaTareas"> </mdc-list>
+    </div>
+    <script type="module" src="/index.js"></script>
+  </body>
+</html>

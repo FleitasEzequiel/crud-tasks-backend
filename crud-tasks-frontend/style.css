@@ -1,0 +1,13 @@
+.mdc-card {
+  margin-bottom: 16px;
+  width: 420px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+}
+html {
+  background-color: gray;
+}
