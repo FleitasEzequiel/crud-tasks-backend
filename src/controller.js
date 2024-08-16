@@ -1,3 +1,4 @@
+import { response } from "express";
 import { connectDB } from "./db.js";
 const query = async (req, res) => {
   return (await connectDB()).query(req);
@@ -12,11 +13,15 @@ export const getTasks = async (req, res) => {
   }
 };
 export const addTask = async (req, res) => {
-  const { title, description, isComplete } = req.body;
-  const pet = await query(
-    `INSERT INTO TASKS (title,description,isComplete) VALUES ('${title}','${description}',${isComplete})`
-  );
-  res.send(pet);
+  const { title, description } = req.body;
+  try {
+    const pet = await query(
+      `INSERT INTO TASKS(title,description,isComplete) VALUES ("${title}","${description}",0)`
+    );
+    res.json("Se agregó la tarea").status(200);
+  } catch (error) {
+    res.send(error).status(500);
+  }
 };
 export const getTask = async (req, res) => {
   const id = req.params.id;
@@ -26,10 +31,14 @@ export const getTask = async (req, res) => {
 export const changeTask = async (req, res) => {
   const { id } = req.params;
   const { title, description, isComplete } = req.body;
-  const [peticion] = await query(
-    `UPDATE TASKS SET title = '${title}',description='${description}',isComplete=${isComplete} WHERE id = ${id}`
-  );
-  res.send(peticion);
+  try {
+    const [peticion] = await query(
+      `UPDATE TASKS SET title = '${title}',description='${description}',isComplete=${isComplete} WHERE id = ${id}`
+    );
+    res.send(peticion);
+  } catch (error) {
+    res.send(error).status(400);
+  }
 };
 
 export const deleteTask = async (req, res) => {

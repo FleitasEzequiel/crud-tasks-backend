@@ -12,7 +12,7 @@ export const applyValidations = (req, res, next) => {
         lista[indice].error.push(`${element.msg}`);
       }
     });
-    res.send(lista);
+    res.send(lista).status(400);
   } else {
     next();
   }

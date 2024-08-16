@@ -10,9 +10,4 @@ export const validacionesDeTasks = [
     .withMessage("La descripción no puede estar vacía")
     .isString()
     .withMessage("La descripción debe ser de tipo string"),
-  body("isComplete")
-    .notEmpty()
-    .withMessage("El valor isComplete no puede estar vacio")
-    .isBoolean()
-    .withMessage("El campo debe ser de tipo Boolean"),
 ];
